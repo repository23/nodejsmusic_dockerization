@@ -1,0 +1,50 @@
+version: '3.9'
+networks:
+    
+    my-net2:
+        name: my-net2
+        driver: bridge
+        attachable: true
+services:
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - 8081:80
+    networks:
+    - 'my-net2'
+      
+  nodejs:
+    container_name: nodejsmusic
+    image: barnabakop/nodejsmusic:0.1
+    restart: always
+    ports:
+      - 5000:5000
+    networks:
+    - my-net2
+ 
+  db:
+    container_name: mysqlmusic
+    image: barnabakop/mysqlmusic:0.1
+    restart: always
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 'password123'
+      MYSQL_ROOT_PASSWORD: 'password123'
+      MYSQL_TCP_PORT: 3306
+    ports:
+      - "3307:3306" 
+    expose:
+      - '3307'
+
+  
+    networks:
+        - my-net2
+
+
+
+volumes:
+  db-vol:
